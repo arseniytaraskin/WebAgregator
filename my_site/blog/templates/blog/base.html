@@ -21,7 +21,7 @@
 </head>
 <body>
     <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: #cc3d3d;">
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background-color: #cc3d3d; max-height: 70px;">
         <div class="container">
             <b><a class="navbar-brand mr-5" href="{% url 'blog-home' %}"> YouTube </a></b>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,15 +32,15 @@
                 {% if user.is_authenticated %}
               <a class="nav-item nav-link " href="{% url 'blog-home' %}" style="color:fff">Главная</a>
               <a class="nav-item nav-link" href="{% url 'user-posts' user.username %}" style="color:fff">Мои ролики</a>
-                <form class="nav-item nav-link ">
-                <input type="text" name=text" class="search" placeholder="Search here!" style="color:red">
-            <input type="submit" name="submit" class="submit" value="Search">
+                <form>
+                <input type="search">
+                <input type="submit" value="Найти">
             </form>
                 {% else %}
                 <a class="nav-item nav-link " href="{% url 'blog-home' %}" style="color:fff">Главная</a>
-                <form class="form">
-                <input type="text" name=text" class="search" placeholder="Search here!">
-            <input type="submit" name="submit" class="submit" value="Search">
+                <form>
+                <input type="search">
+                <input type="submit" value="Найти">
             </form>
                 {% endif %}
             </div>

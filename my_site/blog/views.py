@@ -12,86 +12,90 @@ from .models import Post, Video
 import os
 from wsgiref.util import FileWrapper
 from django.views.generic.base import View
-from .forms import NewVideoForm
+from .forms import NewVideoFormFile
 import random, string
 from django.core.files.storage import FileSystemStorage
 
-class VideoFileView(View):
+class VideoFile(View):
+
     def get(self, request, file_name):
+
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
         file = FileWrapper(open(BASE_DIR+'/'+file_name, 'rb'))
-        response = HttpResponse(file, content_type='video/mp4')
-        response['Content-Disposition'] = 'attachment; filename={}'.format(file_name)
-        return response
 
-class VideoView(View):
-    template_name = 'blog/video.html' #страница с загрузкой
+        res = HttpResponse(file, content_type='video/mp4')
 
+        res['Content-Disposition'] = f'attachment; filename={file_name}'
+
+        return res
+
+class ViewVideo(View):
     def get(self, request, id):
-        video_by_id = Video.objects.get(id=id)
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        video_by_id.path = 'http://localhost:8000/get_video/'+video_by_id.path
-        context = {'video':video_by_id}
+        video_id = Video.objects.get(id=id)
 
-        return render(request, self.template_name, context) #вот здесь идет запрос на просмотр видео
+        video_id.path = 'http://localhost:8000/get_video/' + video_id.path
+
+        context = {'video':video_id}
+
+        return render(request, 'blog/video.html', context) #вот здесь идет запрос на просмотр видео
 
 
-class NewVideo(View):
-    template_name = 'blog/new_video.html'
+class AddVideo(View):
 
     def get(self, request):
-        print(request.user.is_authenticated)
+
         if request.user.is_authenticated == False:
-            # return HttpResponse('You have to be logged in, in order to upload a video.')
             return HttpResponseRedirect('/')
 
-        form = NewVideoForm()
-        return render(request, self.template_name, {'form': form})
+        form = NewVideoFormFile()
+
+        return render(request, 'blog/new_video.html', {'form': form})
 
     def post(self, request):
-        form = NewVideoForm(request.POST, request.FILES)
+        form = NewVideoFormFile(request.POST, request.FILES)
 
-        print(form)
-        print(request.POST)
-        print(request.FILES)
 
         if form.is_valid():
             title = form.cleaned_data['title']
+
             description = form.cleaned_data['description']
+
             file = form.cleaned_data['file']
 
-            random_char = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-            path = random_char + file.name
+            rnd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
-            fs = FileSystemStorage(location=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            filename = fs.save(path, file)
-            file_url = fs.url(filename)
+            path = rnd + file.name
 
-            new_video = Video(title=title,
-                              description=description,
-                              user=request.user,
-                              path=path)
+            #preview_path = random_char + preview.name #
+
+            file_s = FileSystemStorage(location=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+            filename = file_s.save(path, file)
+            #imagename = fs.save(preview_path, preview)
+
+            new_video = Video(title=title, description=description, user=request.user, path=path)
             new_video.save()
             #return HttpResponse('Видео загружено')
-            return HttpResponseRedirect('/video/{}'.format(new_video.id))
+            return HttpResponseRedirect(f'/video/{new_video.id}')
         else:
-            return HttpResponse('You form is not valid. Go back and try again.')
+            return HttpResponse('Вы неправильно загрузили форму. Попробуйте еще раз.')
 
 
 
 def home(request):
     #context = {
-    #    'posts': Post.objects.all()
+    #    'posts': Post.objects.all(),
+    #    'videos': Video.objects.all()
     #}
 
     #return render(request, 'blog/home.html', context)
-    template_name = 'blog/home.html'
 
     def get(self, request):
-        most_recent_videos = Video.objects.order_by('-datetime')[:8]
 
-        return render(request, self.template_name, {'menu_active_item': 'home',
-                                                    'most_recent_videos': most_recent_videos})
+        videos = Video.objects.order_by('-datetime')[:8]
+
+        return render(request, 'blog/home.html', {'menu_active_item': 'home', 'most_recent_videos': videos})
 
 
 class PostListView(ListView):
