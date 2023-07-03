@@ -27,3 +27,14 @@ class Video(models.Model):
 
     def __str__(self):
         return self.title
+
+class Project(models.Model):
+    title = models.CharField(max_length=200) #название проекта
+    description = models.TextField() #описание проекта
+    rools = models.TextField() #правила игры
+    image = models.ImageField(default='default.jpg', upload_to='projects') #главное изображение проекта
+    file = models.FileField() #
+    rating = models.IntegerField(default=0) #рейтинг проекта
+    views = models.IntegerField(default=0) #кол-во просмотров проекта
+    datetime = models.DateTimeField(auto_now=True, blank=False, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
