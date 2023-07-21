@@ -1,5 +1,4 @@
 from django.contrib import admin
-from .models import Post, Video
+from .models import Video, Project
 
-admin.site.register(Post)
 admin.site.register(Video)
