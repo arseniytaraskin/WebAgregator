@@ -135,12 +135,17 @@ class AddProject(View):
 
             path = rnd + file.name
 
-            #file_s = FileSystemStorage(location=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            # preview_path = random_char + preview.name #
 
-            new_project = Project(title=title, description=description, image=image ,user=request.user, path=path)
+            file_s = FileSystemStorage(location=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+            filename = file_s.save(path, file)
+            # imagename = fs.save(preview_path, preview)
+
+            new_project = Project(title=title, description=description, image=image, user=request.user, path=path)
             new_project.save()
-
-            return HttpResponseRedirect(f'/')
+            # return HttpResponse('Видео загружено')
+            return HttpResponseRedirect(f'/project/{new_project.id}')
         else:
             return HttpResponse('Вы неправильно загрузили форму. Попробуйте еще раз.')
 

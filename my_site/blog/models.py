@@ -20,8 +20,8 @@ class Project(models.Model):
     title = models.CharField(max_length=200) #название проекта
     description = models.TextField() #описание проекта
     #rools = models.TextField() #правила игры
-    image = models.ImageField(default='default.jpg', upload_to='projects') #главное изображение проекта
-    file = models.FileField() #
+    image = models.ImageField(default='default.jpg', upload_to='projects_images/%Y-%m-%d/') #главное изображение проекта
+    file = models.FileField()
     path = models.CharField(max_length=100)
     rating = models.IntegerField(default=0) #рейтинг проекта
     views = models.IntegerField(default=0) #кол-во просмотров проекта
