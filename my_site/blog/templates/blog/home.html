@@ -1,15 +1,16 @@
 ﻿{% extends "blog/base.html" %}
 {% block content %}
-    {% for video in videos %}
+    {% for project in projects %}
         <article class="media content-section">
-          <img class="rounded-circle article-img" src="{{ video.user.profile.image.url }}">
+          <img class="rounded-circle article-img" src="{{ project.user.profile.image.url }}">
           <div class="media-body">
             <div class="article-metadata">
-              <a class="mr-2" href="{% url 'user-posts' video.user.username %}">{{ video.user }}</a>
-              <small class="text-muted">{{ video.date_posted|date:"F d, Y" }}</small>
+                <a class="mr-2" href="user/<str:username>">{{ project.user }}</a>
+              <small class="text-muted">{{ project.date_posted|date:"F d, Y" }}</small>
             </div>
-            <h2><a class="article-title" href="/video/{{ video.id }}">{{ video.title }}</a></h2>
-            <p class="article-content">{{ video.description }}</p>
+            <h2><a class="article-title" href="/project/{{ project.id }}">{{ project.title }}</a></h2>
+              <image  src="{{ project.image.url }}" width="200px"></image>
+            <p class="article-content">{{ project.description }}</p>
           </div>
         </article>
     {% endfor %}

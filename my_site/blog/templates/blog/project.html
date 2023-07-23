@@ -1,0 +1,14 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+
+<h2 style="padding-top:5px">{{project.title}}</h2>
+
+<image src="{{ project.image.url }}" width="500px"> </image>
+
+<p style="font-size: 24px;">{{ project.description }}</p>
+
+
+<br>
+
+{% endblock %}
