@@ -16,6 +16,8 @@ from .forms import NewVideoFormFile, NewProjectFormFile
 import random, string
 from django.core.files.storage import FileSystemStorage
 
+import zipfile
+
 def upload_project(request):
     if request.method == 'POST':
         form = NewProjectFormFile(request.POST, request.FILES)
@@ -66,11 +68,36 @@ class ViewVideo(View):
 class ViewProject(View):
     def get(self, request, id):
         project_id = Project.objects.get(id=id)
-        project_id.path = 'http://localhost:8000/get_project/' + project_id.path
+        #project_id.path = 'http://localhost:8000/get_project/' + project_id.path
 
-        context = {'project':project_id}
 
+
+        file_zip = zipfile.ZipFile(project_id.file, 'r')
+        file_zip.extractall(f'./media/projects/{file_zip.filename}')
+        #print(file_zip.namelist())
+        file_zip.close()
+
+        # with zipfile.ZipFile(project_id.file, 'r') as file: #менеджер контекста
+        #     # for item in file.infolist():
+        #     #     print(f"File Name: {item.filename} Date: {item.date_time} Size: {item.file_size}")
+        #
+        #     file.extractall('./')
+
+        context = {'project': project_id,
+                   'project_path': file_zip.filename+'/index.html'}
+
+        #print(project_id.file)
         return render(request, 'blog/project.html', context)
+        #return render(request, f'./{project_id.file}/index.html', context)
+        #return render(request, f'./media/projects/{file_zip.filename}/index.html')
+
+
+def UnityWeb(request):
+    return render(request, template_name='blog/unity.html')
+
+class OpenProject(View):
+    def get(self, request):
+        project_id = Project.objects.get(id=id)
 
 # class AddVideo(View):
 #     def get(self, request):
@@ -142,7 +169,7 @@ class AddProject(View):
             filename = file_s.save(path, file)
             # imagename = fs.save(preview_path, preview)
 
-            new_project = Project(title=title, description=description, image=image, user=request.user, path=path)
+            new_project = Project(title=title, description=description, image=image, user=request.user, file=file, path=path)
             new_project.save()
             # return HttpResponse('Видео загружено')
             return HttpResponseRedirect(f'/project/{new_project.id}')

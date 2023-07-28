@@ -10,6 +10,7 @@ urlpatterns = [
     path('new_project/', AddProject.as_view()),
     path('get_project/<file_name>', ProjectFile.as_view()),
     path('about/', views.about, name='blog-about'),
+    path('unity/', views.UnityWeb, name='unity'),
 
 
     #path('post/new/', NewVideo.as_view(), name='post-create'),
