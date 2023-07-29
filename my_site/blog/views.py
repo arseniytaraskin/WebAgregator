@@ -92,12 +92,19 @@ class ViewProject(View):
         #return render(request, f'./media/projects/{file_zip.filename}/index.html')
 
 
-def UnityWeb(request):
-    return render(request, template_name='blog/unity.html')
+class UnityWeb(View):
+    def get(self, request, id):
+        project_id = Project.objects.get(id=id)
+        file_zip = zipfile.ZipFile(project_id.file, 'r')
+        file_zip.close()
+        return render(request, f'{file_zip.filename}/index.html')
 
 class OpenProject(View):
-    def get(self, request):
+    def get(self, request, id):
         project_id = Project.objects.get(id=id)
+        file_zip = zipfile.ZipFile(project_id.file, 'r')
+        file_zip.close()
+        return render(request, f'{file_zip.filename}/index.html')
 
 # class AddVideo(View):
 #     def get(self, request):
