@@ -73,7 +73,8 @@ class ViewProject(View):
 
 
         file_zip = zipfile.ZipFile(project_id.file, 'r')
-        file_zip.extractall(f'./media/projects/{file_zip.filename}')
+        #file_zip.extractall(f'./media/projects/{file_zip.filename}')
+        file_zip.extractall(f'./blog/static/{file_zip.filename}')
         #print(file_zip.namelist())
         file_zip.close()
 
@@ -97,7 +98,16 @@ class UnityWeb(View):
         project_id = Project.objects.get(id=id)
         file_zip = zipfile.ZipFile(project_id.file, 'r')
         file_zip.close()
-        return render(request, f'{file_zip.filename}/index.html')
+        content = { 'project':project_id,
+                    'project_path':file_zip.filename,
+                    'project_1':file_zip.filename+'/TemplateData/favicon.ico',
+                    'project_2':file_zip.filename+'/TemplateData/style.css',
+                    'project_3':file_zip.filename+'/TemplateData/UnityProgress.js',
+                    'project_4':file_zip.filename+'/Build/UnityLoader.js',
+                    'project_5':file_zip.filename+'/Build/pop it.json'}
+        print(file_zip.filename)
+        return render(request, 'blog/index.html', content)
+        #return render(request, f'{file_zip.filename}/index.html')
 
 class OpenProject(View):
     def get(self, request, id):

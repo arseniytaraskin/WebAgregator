@@ -34,7 +34,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'rest_framework',
     'djoser',
-    'api'
+    'api',
+    'media',
 ]
 
 MIDDLEWARE = [
