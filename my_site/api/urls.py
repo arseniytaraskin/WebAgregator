@@ -1,7 +1,10 @@
 from django.urls import path
-from .views import *
+from rest_framework import routers
+from .api import *
+
 app_name = 'api'
 
-urlpatterns = [
-    path('projects/', ListProjectsView.as_view(), name='project-list')
-]
+router = routers.DefaultRouter()
+router.register('project', ProjectViewSet)
+
+urlpatterns = router.urls
