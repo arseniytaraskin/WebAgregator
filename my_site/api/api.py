@@ -1,5 +1,5 @@
 from .models import ProjectModel
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, generics
 from .serializers import ProjectSerializer
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -9,3 +9,4 @@ class ProjectViewSet(viewsets.ModelViewSet):
     ]
 
     serializer_class = ProjectSerializer
+

@@ -12,7 +12,7 @@ from .models import Video, Project
 import os
 from wsgiref.util import FileWrapper
 from django.views.generic.base import View
-from .forms import NewVideoFormFile, NewProjectFormFile
+from .forms import NewProjectFormFile
 import random, string
 from django.core.files.storage import FileSystemStorage
 
@@ -29,19 +29,6 @@ def upload_project(request):
         return render(request, 'upload.html', {'form':form})
 
 
-class VideoFile(View):
-    def get(self, request, file_name):
-
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-        file = FileWrapper(open(BASE_DIR+'/'+file_name, 'rb'))
-
-        res = HttpResponse(file, content_type='video/mp4')
-
-        res['Content-Disposition'] = f'attachment; filename={file_name}'
-
-        return res
-
 class ProjectFile(View):
     def get(self, request, file_name):
 
@@ -55,15 +42,7 @@ class ProjectFile(View):
 
         return res
 
-class ViewVideo(View):
-    def get(self, request, id):
-        video_id = Video.objects.get(id=id)
 
-        video_id.path = 'http://localhost:8000/get_video/' + video_id.path
-
-        context = {'video':video_id}
-
-        return render(request, 'blog/video.html', context) #вот здесь идет запрос на просмотр видео
 
 class ViewProject(View):
     def get(self, request, id):
@@ -115,44 +94,6 @@ class OpenProject(View):
         file_zip = zipfile.ZipFile(project_id.file, 'r')
         file_zip.close()
         return render(request, f'{file_zip.filename}/index.html')
-
-# class AddVideo(View):
-#     def get(self, request):
-#
-#         if request.user.is_authenticated == False:
-#             return HttpResponseRedirect('/')
-#
-#         form = NewVideoFormFile()
-#
-#         return render(request, 'blog/new_video.html', {'form': form})
-#
-#     def post(self, request):
-#         form = NewVideoFormFile(request.POST, request.FILES)
-#
-#         if form.is_valid():
-#             title = form.cleaned_data['title']
-#
-#             description = form.cleaned_data['description']
-#
-#             file = form.cleaned_data['file']
-#
-#             rnd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-#
-#             path = rnd + file.name
-#
-#             #preview_path = random_char + preview.name #
-#
-#             file_s = FileSystemStorage(location=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-#
-#             filename = file_s.save(path, file)
-#             #imagename = fs.save(preview_path, preview)
-#
-#             new_video = Video(title=title, description=description, user=request.user, path=path)
-#             new_video.save()
-#             #return HttpResponse('Видео загружено')
-#             return HttpResponseRedirect(f'/video/{new_video.id}')
-#         else:
-#             return HttpResponse('Вы неправильно загрузили форму. Попробуйте еще раз.')
 
 #представление для добавления проекта
 class AddProject(View):
@@ -231,46 +172,6 @@ class UserPostListView(ListView):
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         return Video.objects.filter(user=user).order_by('-date_posted')
-
-
-# class PostDetailView(DetailView):
-#     model = Post
-
-
-# class PostCreateView(LoginRequiredMixin, CreateView):
-#     model = Post
-#     fields = ['title', 'content']
-#
-#     def form_valid(self, form):
-#         form.instance.author = self.request.user
-#         return super().form_valid(form)
-
-
-# class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-#     model = Post
-#     fields = ['title', 'content']
-#
-#     def form_valid(self, form):
-#         form.instance.author = self.request.user
-#         return super().form_valid(form)
-#
-#     def test_func(self):
-#         post = self.get_object()
-#         if self.request.user == post.author:
-#             return True
-#         return False
-
-
-# class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-#     model = Post
-#     success_url = '/'
-#
-#     def test_func(self):
-#         post = self.get_object()
-#         if self.request.user == post.author:
-#             return True
-#         return False
-
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'Все ролики автора: '})
