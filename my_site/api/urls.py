@@ -1,10 +1,13 @@
 from django.urls import path
 from rest_framework import routers
-from .api import *
+from .views import *
+from django.views.generic import TemplateView
 
-app_name = 'api'
+# router = routers.DefaultRouter()
+# router.register('project', ProjectViewSet)
+#
+# urlpatterns = router.urls
 
-router = routers.DefaultRouter()
-router.register('project', ProjectViewSet)
-
-urlpatterns = router.urls
+urlpatterns = [
+    path('', LeadProjectCreate.as_view())
+]
