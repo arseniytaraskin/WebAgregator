@@ -24,7 +24,7 @@
             <div class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
               <a class="nav-item nav-link " href="{% url 'blog-home' %}" style="color:fff">Главная</a>
-              <a class="nav-item nav-link" href="{% url 'user-projects' user.username %}" style="color:fff">Мои ролики</a>
+              <a class="nav-item nav-link" href="{% url 'user-projects' user.username %}" style="color:fff">Мои проекты</a>
                 {% else %}
                 <a class="nav-item nav-link " href="{% url 'blog-home' %}" style="color:fff">Главная</a>
                 {% endif %}

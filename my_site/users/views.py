@@ -2,7 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from rest_framework import generics
+from .models import User
+from .serializers import UserSerializer
 
+
+class UsersAPI(generics.ListCreateAPIView):
+    queryset = User
+    serializer_class = UserSerializer
 
 def register(request):
     if request.method == 'POST':

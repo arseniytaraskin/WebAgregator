@@ -12,4 +12,5 @@ urlpatterns = [
     path('about/', views.about, name='blog-about'),
     path('unity/<int:id>', views.UnityWeb.as_view()),
     path('my_site/media/projects/projects/2023-07-25/pop_it_73IBn66.zip/<int:id>', views.OpenProject.as_view()),
+    path('api/get_project/', views.ProjectFileAPI)
 ]

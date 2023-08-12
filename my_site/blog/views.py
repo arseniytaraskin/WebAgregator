@@ -16,6 +16,10 @@ from .forms import NewProjectFormFile
 import random, string
 from django.core.files.storage import FileSystemStorage
 
+from .models import Project
+from .serializers import ProjectAPISerializer
+from rest_framework import generics
+
 import zipfile
 
 def upload_project(request):
@@ -28,6 +32,9 @@ def upload_project(request):
             form = NewProjectFormFile()
         return render(request, 'upload.html', {'form':form})
 
+class ProjectFileAPI(generics.ListAPIView):
+    queryset = Project
+    serializer_class = ProjectAPISerializer
 
 class ProjectFile(View):
     def get(self, request, file_name):
