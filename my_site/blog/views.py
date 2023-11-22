@@ -114,24 +114,15 @@ class AddProject(View):
 
         if form.is_valid():
             title = form.cleaned_data['title']
-
             description = form.cleaned_data['description']
-
             image = form.cleaned_data['image']
-
             file = form.cleaned_data['file']
-
             rnd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-
             path = rnd + file.name
-
             # preview_path = random_char + preview.name #
-
             file_s = FileSystemStorage(location=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
             filename = file_s.save(path, file)
             # imagename = fs.save(preview_path, preview)
-
             new_project = Project(title=title, description=description, image=image, user=request.user, file=file,
                                   path=path)
             new_project.save()
@@ -164,9 +155,12 @@ class ProjectListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        rating_min = self.request.GET.get('rating_min') or 0
-        rating_max = self.request.GET.get('rating_max') or 100
-        return Project.objects.filter(rating__range=(rating_min, rating_max)).order_by('-date_posted')
+        categories = self.request.GET.getlist('category')
+
+        projects = Project.objects.all()
+        for category in categories:
+            projects = projects.filter(categories__title=category)
+        return projects.order_by('-date_posted')
 
 
 class PostListView(ListView):
