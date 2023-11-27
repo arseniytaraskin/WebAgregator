@@ -33,7 +33,7 @@ def upload_project(request):
         return render(request, 'upload.html', {'form':form})
 
 class ProjectFileAPI(generics.ListAPIView):
-    queryset = Project
+    queryset = Project.objects.all()
     serializer_class = ProjectAPISerializer
 
 class ProjectFile(View):

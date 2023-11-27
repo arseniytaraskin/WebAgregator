@@ -9,5 +9,6 @@ from django.views.generic import TemplateView
 # urlpatterns = router.urls
 
 urlpatterns = [
-    path('', LeadProjectCreate.as_view())
+    path('', LeadProjectCreate.as_view()),
+    path('get_project/<str:file_name>', WebHtmlDocumentView.as_view())
 ]
