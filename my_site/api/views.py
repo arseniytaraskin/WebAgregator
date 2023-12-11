@@ -2,8 +2,8 @@ from rest_framework.decorators import api_view
 from rest_framework import generics
 
 from my_site import settings
-from .models import ProjectModel, MainPage
-from .serializers import ProjectSerializer, MainPageSerializer
+from .models import ProjectModel, MainPage, TestModel
+from .serializers import ProjectSerializer, MainPageSerializer, TestProjectSerializer
 from django.http import HttpResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -12,8 +12,8 @@ import os
 from wsgiref.util import FileWrapper
 
 class LeadProjectCreate(generics.ListCreateAPIView):
-    queryset = ProjectModel.objects.all()
-    serializer_class = ProjectSerializer
+    queryset = TestModel.objects.all()
+    serializer_class = TestProjectSerializer
 
 class WebHtmlDocumentView(View):
     def get(self, request, file_name):
