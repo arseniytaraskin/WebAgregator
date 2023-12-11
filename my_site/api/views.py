@@ -44,3 +44,9 @@ class HTMLDocumentView(View):
                 return response
         else:
             return HttpResponse("HTML документ не найден", status=404)
+
+
+# новые
+class MainPageDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = MainPage.objects.all()
+    serializer_class = MainPageSerializer

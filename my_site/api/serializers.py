@@ -10,3 +10,8 @@ class MainPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = MainPage
         fields = '__all__'
+
+class MainPageSerializerNew(serializers.ModelSerializer):
+    class Meta:
+        model = MainPage
+        fields = '__all__'
