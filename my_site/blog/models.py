@@ -39,11 +39,3 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
-
-
-# class Project_to_categories(models.Model):
-#     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-#     category = models.ForeignKey(Categories, on_delete=models.CASCADE)
-#
-#     def __str__(self):
-#         return self.title
