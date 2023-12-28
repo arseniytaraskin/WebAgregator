@@ -31,7 +31,7 @@ def upload_project(request):
 
 
 class ProjectFileAPI(generics.ListAPIView):
-    queryset = Project
+    queryset = Project.objects.all()
     serializer_class = ProjectAPISerializer
 
 
