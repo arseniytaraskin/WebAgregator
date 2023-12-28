@@ -1,26 +1,23 @@
-from django.shortcuts import render, get_object_or_404, HttpResponse, HttpResponseRedirect
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
-from django.views.generic import (
-    ListView,
-    DetailView,
-    CreateView,
-    UpdateView,
-    DeleteView
-)
-from .models import Video, Project
 import os
+import random
+import string
+import zipfile
 from wsgiref.util import FileWrapper
-from django.views.generic.base import View
-from .forms import NewProjectFormFile
-import random, string
-from django.core.files.storage import FileSystemStorage
 
-from .models import Project
-from .serializers import ProjectAPISerializer
+from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
+from django.shortcuts import render, get_object_or_404, HttpResponse, HttpResponseRedirect
+from django.views.generic import (
+    ListView
+)
+from django.views.generic.base import View
 from rest_framework import generics
 
-import zipfile
+from .forms import NewProjectFormFile
+from .models import Project
+from .models import Video
+from .serializers import ProjectAPISerializer
+
 
 def upload_project(request):
     if request.method == 'POST':
@@ -30,18 +27,19 @@ def upload_project(request):
             return HttpResponseRedirect('/success/url/')
         else:
             form = NewProjectFormFile()
-        return render(request, 'upload.html', {'form':form})
+        return render(request, 'upload.html', {'form': form})
+
 
 class ProjectFileAPI(generics.ListAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectAPISerializer
 
+
 class ProjectFile(View):
     def get(self, request, file_name):
-
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-        file = FileWrapper(open(BASE_DIR+'/'+file_name, 'rb'))
+        file = FileWrapper(open(BASE_DIR + '/' + file_name, 'rb'))
 
         res = HttpResponse(file)
 
@@ -50,18 +48,15 @@ class ProjectFile(View):
         return res
 
 
-
 class ViewProject(View):
     def get(self, request, id):
         project_id = Project.objects.get(id=id)
-        #project_id.path = 'http://localhost:8000/get_project/' + project_id.path
-
-
+        # project_id.path = 'http://localhost:8000/get_project/' + project_id.path
 
         file_zip = zipfile.ZipFile(project_id.file, 'r')
-        #file_zip.extractall(f'./media/projects/{file_zip.filename}')
+        # file_zip.extractall(f'./media/projects/{file_zip.filename}')
         file_zip.extractall(f'./blog/static/{file_zip.filename}')
-        #print(file_zip.namelist())
+        # print(file_zip.namelist())
         file_zip.close()
 
         # with zipfile.ZipFile(project_id.file, 'r') as file: #менеджер контекста
@@ -71,12 +66,12 @@ class ViewProject(View):
         #     file.extractall('./')
 
         context = {'project': project_id,
-                   'project_path': file_zip.filename+'/index.html'}
+                   'project_path': file_zip.filename + '/index.html'}
 
-        #print(project_id.file)
+        # print(project_id.file)
         return render(request, 'blog/project.html', context)
-        #return render(request, f'./{project_id.file}/index.html', context)
-        #return render(request, f'./media/projects/{file_zip.filename}/index.html')
+        # return render(request, f'./{project_id.file}/index.html', context)
+        # return render(request, f'./media/projects/{file_zip.filename}/index.html')
 
 
 class UnityWeb(View):
@@ -84,16 +79,17 @@ class UnityWeb(View):
         project_id = Project.objects.get(id=id)
         file_zip = zipfile.ZipFile(project_id.file, 'r')
         file_zip.close()
-        content = { 'project':project_id,
-                    'project_path':file_zip.filename,
-                    'project_1':file_zip.filename+'/TemplateData/favicon.ico',
-                    'project_2':file_zip.filename+'/TemplateData/style.css',
-                    'project_3':file_zip.filename+'/TemplateData/UnityProgress.js',
-                    'project_4':file_zip.filename+'/Build/UnityLoader.js',
-                    'project_5':file_zip.filename+'/Build/pop it.json'}
+        content = {'project': project_id,
+                   'project_path': file_zip.filename,
+                   'project_1': file_zip.filename + '/TemplateData/favicon.ico',
+                   'project_2': file_zip.filename + '/TemplateData/style.css',
+                   'project_3': file_zip.filename + '/TemplateData/UnityProgress.js',
+                   'project_4': file_zip.filename + '/Build/UnityLoader.js',
+                   'project_5': file_zip.filename + '/Build/pop it.json'}
         print(file_zip.filename)
         return render(request, 'blog/index.html', content)
-        #return render(request, f'{file_zip.filename}/index.html')
+        # return render(request, f'{file_zip.filename}/index.html')
+
 
 class OpenProject(View):
     def get(self, request, id):
@@ -102,7 +98,8 @@ class OpenProject(View):
         file_zip.close()
         return render(request, f'{file_zip.filename}/index.html')
 
-#представление для добавления проекта
+
+# представление для добавления проекта
 class AddProject(View):
     def get(self, request):
         if request.user.is_authenticated == False:
@@ -111,57 +108,60 @@ class AddProject(View):
         form = NewProjectFormFile()
 
         return render(request, 'blog/new_project.html', {'form': form})
+
     def post(self, request):
         form = NewProjectFormFile(request.POST, request.FILES)
 
         if form.is_valid():
             title = form.cleaned_data['title']
-
             description = form.cleaned_data['description']
-
             image = form.cleaned_data['image']
-
             file = form.cleaned_data['file']
-
             rnd = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-
             path = rnd + file.name
-
             # preview_path = random_char + preview.name #
-
             file_s = FileSystemStorage(location=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
             filename = file_s.save(path, file)
             # imagename = fs.save(preview_path, preview)
-
-            new_project = Project(title=title, description=description, image=image, user=request.user, file=file, path=path)
+            new_project = Project(title=title, description=description, image=image, user=request.user, file=file,
+                                  path=path)
             new_project.save()
             # return HttpResponse('Видео загружено')
             return HttpResponseRedirect(f'/project/{new_project.id}')
         else:
             return HttpResponse('Вы неправильно загрузили форму. Попробуйте еще раз.')
 
+
 def home(request):
-    #context = {
+    # context = {
     #    'posts': Post.objects.all(),
     #    'videos': Video.objects.all()
-    #}
+    # }
 
-    #return render(request, 'blog/home.html', context)
+    # return render(request, 'blog/home.html', context)
 
     def get(self, request):
-
         videos = Video.objects.order_by('-datetime')[:8]
 
         return render(request, 'blog/home.html', {'menu_active_item': 'home', 'most_recent_videos': videos})
 
-#для отображения списка проектов на странице
+
+# для отображения списка проектов на странице
 class ProjectListView(ListView):
     model = Project
-    template_name = 'blog/home.html' #путь к шаблону
+    template_name = 'blog/home.html'  # путь к шаблону
     context_object_name = 'projects'
     ordering = ['-date_posted']
     paginate_by = 10
+
+    def get_queryset(self):
+        categories = self.request.GET.getlist('category')
+
+        projects = Project.objects.all()
+        for category in categories:
+            projects = projects.filter(categories__title=category)
+        return projects.order_by('-date_posted')
+
 
 class PostListView(ListView):
     model = Project
@@ -169,6 +169,7 @@ class PostListView(ListView):
     context_object_name = 'projects'
     ordering = ['-date_posted']
     paginate_by = 5
+
 
 class UserPostListView(ListView):
     model = Video
@@ -180,9 +181,6 @@ class UserPostListView(ListView):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         return Video.objects.filter(user=user).order_by('-date_posted')
 
+
 def about(request):
     return render(request, 'blog/about.html', {'title': 'Все ролики автора: '})
-
-
-
-

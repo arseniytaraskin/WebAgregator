@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     path('', PostListView.as_view(), name='blog-home'),
     path('user/<str:username>', UserPostListView.as_view(), name='user-projects'),
+    path('projects/', ProjectListView.as_view()),
     path('project/<int:id>', ViewProject.as_view()),
     path('new_project/', AddProject.as_view()),
     path('get_project/<file_name>', ProjectFile.as_view()),
