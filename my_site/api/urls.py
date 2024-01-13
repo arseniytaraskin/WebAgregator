@@ -12,6 +12,8 @@ urlpatterns = [
     path('', LeadProjectCreate.as_view()),
     path('get_project/<str:file_name>', WebHtmlDocumentView.as_view()),
     path('mainpage/', MainPageListCreateView.as_view()),
+    path('page', MainPageListCreateView.as_view()),
+    path('page/<int:pk>/', MainPageDetailView.as_view()),
     path('mainpage/<int:pk>/', MainPageDetailView.as_view()),
     
     #path('profile/<int:profile_id')
