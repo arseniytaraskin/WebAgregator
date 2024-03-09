@@ -3,13 +3,17 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from rest_framework import generics
-from .models import User
-from .serializers import UserSerializer
+from .models import User, ProfileNew
+from .serializers import UserSerializer, ProfileSerializer
 
 
 class UsersAPI(generics.ListCreateAPIView):
-    queryset = User
+    queryset = User.objects.all()
     serializer_class = UserSerializer
+
+class GetProfile(generics.ListCreateAPIView):
+    queryset = ProfileNew.objects.all()
+    serializer_class = ProfileSerializer
 
 def register(request):
     if request.method == 'POST':
