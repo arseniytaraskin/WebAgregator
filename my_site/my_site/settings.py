@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'api',
     'media',
     'corsheaders',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

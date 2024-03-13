@@ -11,6 +11,12 @@
             <h2><a class="article-title" href="/project/{{ project.id }}">{{ project.title }}</a></h2>
               <image  src="{{ project.image.url }}" width="200px"></image>
             <p class="article-content">{{ project.description }}</p>
+            <p class="article-content">Категории</p>
+            <ol>
+                {% for category in project.categories.all %}
+                    <li>{{ category }}</li>
+                {% endfor %}
+            </ol>
           </div>
         </article>
     {% endfor %}
